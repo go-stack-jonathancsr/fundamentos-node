@@ -20,6 +20,9 @@ class CreateTransactionService {
       value,
       type,
     });
+    if (type !== 'income' && type !== 'outcome') {
+      throw Error('Type is not compatible');
+    }
 
     return transaction;
   }

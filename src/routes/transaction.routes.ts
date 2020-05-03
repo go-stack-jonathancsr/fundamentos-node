@@ -11,7 +11,9 @@ transactionRouter.get('/', (request, response) => {
   try {
     const transactions = transactionsRepository.all();
 
-    return response.json(transactions);
+    const balance = transactionsRepository.getBalance();
+
+    return response.json({ transactions, balance });
   } catch (err) {
     return response.status(400).json({ error: err.message });
   }
@@ -20,14 +22,14 @@ transactionRouter.get('/', (request, response) => {
 transactionRouter.post('/', (request, response) => {
   try {
     const { title, value, type } = request.body;
-
+    const parsedValue = Number(value);
     const createTransactionService = new CreateTransactionService(
       transactionsRepository,
     );
 
     const transaction = createTransactionService.execute({
       title,
-      value,
+      value: parsedValue,
       type,
     });
 
