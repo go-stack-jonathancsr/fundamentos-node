@@ -15,6 +15,8 @@ class CreateTransactionService {
   }
 
   public execute({ title, value, type }: RequestDTO): Transaction {
+    const { total } = this.transactionsRepository.getBalance();
+
     const transaction = this.transactionsRepository.create({
       title,
       value,
@@ -22,6 +24,10 @@ class CreateTransactionService {
     });
     if (type !== 'income' && type !== 'outcome') {
       throw Error('Type is not compatible');
+    }
+
+    if (type === 'outcome' && value > total) {
+      throw Error('{ error: string }');
     }
 
     return transaction;
